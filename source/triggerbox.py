@@ -1,5 +1,6 @@
 import serial
 from source.utils import get_serial_port
+from psychopy.hardware import keyboard
 class TriggerBox:
     def __init__(self,hint:str = 'Silicon'):
         ports = serial.tools.list_ports.comports()
@@ -15,3 +16,15 @@ class TriggerBox:
                     if line[0] == 1:
                         return
                     break
+
+
+class FakeTriggerBox:
+    def __init__(self, hint: str = 'Keyboard'):
+        self.kb = keyboard.Keyboard()
+
+    def wait_trigger(self):
+        self.kb.clearEvents()
+        while True:
+            keys = self.kb.getKeys(keyList=['0'], waitRelease=False)
+            if keys:
+                return

@@ -5,7 +5,22 @@ from psychopy import core, logging
 from typing import List
 import sounddevice as sd
 import numpy as np
+from collections import defaultdict
+import random
 
+def get_randomization(total_runs,trials_per_run,channels):
+    # Step 1: Assign each stim to 2 different runs
+    stim_run_assignments = defaultdict(list)
+    all_sniffs = [[] for _ in range(total_runs)]
+
+    for i in range(total_runs):
+        for _ in range(int(trials_per_run / len(channels))):
+            all_sniffs[i] += channels
+        while (True):
+            random.shuffle(all_sniffs[i])
+            if not has_3_values_in_a_row(all_sniffs[i]):
+                break
+    return all_sniffs
 def get_serial_port(device_hint:str = 'Arduino Due'):
     ports = list_ports.comports()
 
