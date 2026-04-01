@@ -3,7 +3,7 @@ name = "sniff0-scripts-new"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.11.6"
+requires-python = "==3.11.9"
 dependencies = [
     "arabic-reshaper==3.0.0",
     "astunparse==1.6.3",

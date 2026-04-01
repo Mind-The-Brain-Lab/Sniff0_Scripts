@@ -14,32 +14,31 @@ from collections import defaultdict
 #######################################################################################################################
 ## MEGA IMPORTANT PARAMETERS
 #######################################################################################################################
-RUN_NUMBER = 1 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
+RUN_NUMBER = 2 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
 DEBUGGING = True #PUT THAT TO FALSE TO COMMUNICATE WITH THE OLFACTOMETER
 FULLSCREEN = False #DEBUGGING FULLSCREEN
 #######################################################################################################################
 ## JITTERED ODORS AND EXPERIMENT NAME
 #################################################################0######################################################
-GENERAL_EXPERIMENT_NAME = 'paparagna'
+GENERAL_EXPERIMENT_NAME = 'p1-pt'
 
-TOTAL_RUNS = 4
-TRIALS_PER_RUN = 16
-CHANNELS = [1, 2, 3, 4]
+TOTAL_RUNS = 2
+TRIALS_PER_RUN = 24
+CHANNELS = [1, 2]
 
 all_stims = get_randomization(total_runs=TOTAL_RUNS, trials_per_run=TRIALS_PER_RUN, channels=CHANNELS)
 #print(all_stims)
 #######################################################################################################################
 ## OTHER PARAMETERS
 #######################################################################################################################
-NUM_SNIFFS = 2 #number of (pulses + rest) cycles in each stimulus administration
+NUM_SNIFFS = 1 #number of (pulses + rest) cycles in each stimulus administration
 SNIFFING_QUESTION = 'Che odore hai sentito?'
 
 # Durations in seconds
-RESPONSE_DURATION= 6 #time windows for the answer
-FIXATION_DURATION = 1 #time for the fixation cross before the stimuli
-STIM_DURATION = 2 #durations of each odor pulse
-STOP_DURATION = 1 #isi time between each odor pulse
-REST_DURATION = 11
+RESPONSE_DURATION= 0 #time windows for the answer
+STIM_DURATION = 8 #durations of each odor pulse
+STOP_DURATION = 0 #isi time between each odor pulse
+REST_DURATION = 12
 
 AUDIO_SAMPLE_RATE = 44100
 SCREEN_HZ = 60
@@ -136,35 +135,30 @@ win.flip()
 
 for stim in stims:
     # Show white screen during REST
-    win.color = [1, 1, 1]
-    win.flip()
-
     #Rest phase
+    cross.draw()
+    win.flip()
     static_period.start(REST_DURATION)
     logging.exp(f"REST {timer.getTime():.4f}")
     static_period.complete()
 
-    #Fixation cross phase
-    static_period.start(FIXATION_DURATION)
     dot.draw()
     win.flip()
-    logging.exp(f"FIX {timer.getTime():.4f}")
-
-
     #Stimulus phase
     olf.stimulus_on(channel=stim,
                     stim_duration=STIM_DURATION,
                     stop_duration=STOP_DURATION,
                     repetition=NUM_SNIFFS
                     )
-    static_period.complete()
+
     # Asking the user a question and recording it
-    static_period.start(RESPONSE_DURATION)
-    mic.record(RESPONSE_DURATION,recorded_clips)
-    question_text.draw()
-    win.flip()
-    logging.exp(f"QUEST {timer.getTime():.4f}")
-    static_period.complete()
+    if RESPONSE_DURATION != 0:
+        static_period.start(RESPONSE_DURATION)
+        mic.record(RESPONSE_DURATION,recorded_clips)
+        question_text.draw()
+        win.flip()
+        logging.exp(f"QUEST {timer.getTime():.4f}")
+        static_period.complete()
 
 # Close PsychoPy properly
 logging.exp(f"END {timer.getTime():.4f}")

@@ -184,8 +184,9 @@ class Olfactometer:
         for i in range(repetition):  #[0,1,2,3] if repetition = 4
             logging.exp(f"SNIFF {self.timer.getTime():.4f} {channel} ")
             self.odore_on(stim_duration)
-            logging.exp(f"ISI {self.timer.getTime():.4f}")
-            self.do_nothing(stop_duration)
+            if stop_duration > 0:
+                logging.exp(f"ISI {self.timer.getTime():.4f}")
+                self.do_nothing(stop_duration)
         return (stim_duration + stop_duration) * repetition  #milliseconds
 
     def cont_stimulus_on(self, channel: int, stim_duration, stop_duration, repetition: int):
