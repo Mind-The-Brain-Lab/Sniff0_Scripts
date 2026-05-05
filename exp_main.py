@@ -149,7 +149,7 @@ for stim in stims:
     dot.draw()
     win.flip()
     logging.exp(f"FIX {timer.getTime():.4f}")
-
+    static_period.complete()
 
     #Stimulus phase
     olf.stimulus_on(channel=stim,
@@ -157,7 +157,7 @@ for stim in stims:
                     stop_duration=STOP_DURATION,
                     repetition=NUM_SNIFFS
                     )
-    static_period.complete()
+
     # Asking the user a question and recording it
     static_period.start(RESPONSE_DURATION)
     mic.record(RESPONSE_DURATION,recorded_clips)
