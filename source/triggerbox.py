@@ -7,7 +7,9 @@ class TriggerBox:
 
         ser = get_serial_port('Silicon')
         self.ser = serial.Serial(ser, 9600)
+        self.ser.flush()
     def wait_trigger(self):
+        self.ser.flush()
         while True:
             self.ser.write(bytearray([2]))
             while True:

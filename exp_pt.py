@@ -5,7 +5,7 @@ from psychopy import visual, event, core, logging
 from datetime import datetime
 import os , shutil
 from source.olfattometro import Olfactometer
-from source.utils import MicrophoneWrapper,get_randomization
+from source.utils import MicrophoneWrapper,get_randomization_pt
 from scipy.io.wavfile import write
 from source.triggerbox import TriggerBox, FakeTriggerBox
 from pathlib import Path
@@ -14,32 +14,31 @@ from collections import defaultdict
 #######################################################################################################################
 ## MEGA IMPORTANT PARAMETERS
 #######################################################################################################################
-RUN_NUMBER = 2 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
-DEBUGGING = True #PUT THAT TO FALSE TO COMMUNICATE WITH THE OLFACTOMETER
+RUN_NUMBER = 1 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
+DEBUGGING = False #PUT THAT TO False TO COMMUNICATE WITH THE OLFACTOMETER
 FULLSCREEN = False #DEBUGGING FULLSCREEN
 #######################################################################################################################
 ## JITTERED ODORS AND EXPERIMENT NAME
 #################################################################0######################################################
-GENERAL_EXPERIMENT_NAME = 'p1-pt'
+GENERAL_EXPERIMENT_NAME = 'PAZIENTE'
 
 TOTAL_RUNS = 2
-TRIALS_PER_RUN = 24
+TRIALS_PER_RUN = 12
 CHANNELS = [1, 2]
-
-all_stims = get_randomization(total_runs=TOTAL_RUNS, trials_per_run=TRIALS_PER_RUN, channels=CHANNELS)
+ASK_EVERY = 3
+all_stims = get_randomization_pt(total_runs=TOTAL_RUNS, trials_per_run=TRIALS_PER_RUN, channels=CHANNELS,ask_every=ASK_EVERY)
 #print(all_stims)
 #######################################################################################################################
 ## OTHER PARAMETERS
 #######################################################################################################################
 NUM_SNIFFS = 1 #number of (pulses + rest) cycles in each stimulus administration
-SNIFFING_QUESTION = 'Che odore hai sentito?'
+SNIFFING_QUESTION = 'Hai sentito odore?'
 
 # Durations in seconds
-RESPONSE_DURATION= 0 #time windows for the answer
+RESPONSE_DURATION= 6 #time windows for the answer
 STIM_DURATION = 8 #durations of each odor pulse
 STOP_DURATION = 0 #isi time between each odor pulse
 REST_DURATION = 12
-
 AUDIO_SAMPLE_RATE = 44100
 SCREEN_HZ = 60
 #######################################################################################################################
@@ -53,6 +52,7 @@ zip_dir = outputs_path/'zips'
 ## SETUP OF ALL THE USEFUL TOOLS
 #######################################################################################################################
 stims = all_stims[RUN_NUMBER - 1]
+print(stims)
 recorded_clips =[]
 EXPERIMENT_NAME = f'RUN_{RUN_NUMBER}_{GENERAL_EXPERIMENT_NAME}'
 # Remove frame rate measurement to avoid getting stuck
@@ -133,7 +133,7 @@ win.flip()
 cross.draw()
 win.flip()
 
-for stim in stims:
+for idx, stim in enumerate(stims):
     # Show white screen during REST
     #Rest phase
     cross.draw()
@@ -152,7 +152,13 @@ for stim in stims:
                     )
 
     # Asking the user a question and recording it
-    if RESPONSE_DURATION != 0:
+    if RESPONSE_DURATION != 0 and ((idx +1)%ASK_EVERY == 0):
+        cross.draw()
+        win.flip()
+        static_period.start(REST_DURATION)
+        logging.exp(f"REST {timer.getTime():.4f}")
+        static_period.complete()
+
         static_period.start(RESPONSE_DURATION)
         mic.record(RESPONSE_DURATION,recorded_clips)
         question_text.draw()

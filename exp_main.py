@@ -14,13 +14,14 @@ from collections import defaultdict
 #######################################################################################################################
 ## MEGA IMPORTANT PARAMETERS
 #######################################################################################################################
-RUN_NUMBER = 1 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
-DEBUGGING = True #PUT THAT TO FALSE TO COMMUNICATE WITH THE OLFACTOMETER
+RUN_NUMBER = 2 # START FROM 1!!! (1 <= RUN_NUMBER <= 4)
+GENERAL_EXPERIMENT_NAME = 'ODO_14_POST'
+DEBUGGING = False #PUT THAT TO FALSE TO COMMUNICATE WITH THE OLFACTOMETER
 FULLSCREEN = False #DEBUGGING FULLSCREEN
 #######################################################################################################################
 ## JITTERED ODORS AND EXPERIMENT NAME
 #################################################################0######################################################
-GENERAL_EXPERIMENT_NAME = 'paparagna'
+
 
 TOTAL_RUNS = 4
 TRIALS_PER_RUN = 16
@@ -38,7 +39,7 @@ SNIFFING_QUESTION = 'Che odore hai sentito?'
 RESPONSE_DURATION= 6 #time windows for the answer
 FIXATION_DURATION = 1 #time for the fixation cross before the stimuli
 STIM_DURATION = 2 #durations of each odor pulse
-STOP_DURATION = 1 #isi time between each odor pulse
+STOP_DURATION = 1 #isi time between each odor pulse223
 REST_DURATION = 11
 
 AUDIO_SAMPLE_RATE = 44100
@@ -215,5 +216,3 @@ shutil.make_archive(str(zip_name), 'zip', tmp_dir)
 for file in tmp_dir.iterdir():
     file.unlink()
 core.quit()
-
-

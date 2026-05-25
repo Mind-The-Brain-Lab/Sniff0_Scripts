@@ -7,6 +7,7 @@ import sounddevice as sd
 import numpy as np
 from collections import defaultdict
 import random
+import copy
 
 def get_randomization(total_runs,trials_per_run,channels):
     # Step 1: Assign each stim to 2 different runs
@@ -19,6 +20,37 @@ def get_randomization(total_runs,trials_per_run,channels):
         while (True):
             random.shuffle(all_sniffs[i])
             if not has_3_values_in_a_row(all_sniffs[i]):
+                break
+    return all_sniffs
+
+def get_randomization_pt(total_runs,trials_per_run,channels,ask_every:int):
+
+    assert trials_per_run % ask_every == 0, "trials_per_run must be divisible by ask_every"
+
+    all_sniffs = [[] for _ in range(total_runs)]
+
+    for i in range(total_runs):
+        normal_sniffs = []
+        ask_sniffs = []
+        normals = int(trials_per_run / len(channels)) - int(trials_per_run / (ask_every*len(channels)))
+        for _ in range(normals):
+            normal_sniffs += channels
+        for _ in range(int((trials_per_run - normals) / len(channels))):
+            ask_sniffs += channels
+        while (True):
+            actual_sniffs = []
+            cp_ask = copy.deepcopy(ask_sniffs)
+            cp_normal = copy.deepcopy(normal_sniffs)
+            random.shuffle(cp_ask)
+            random.shuffle(cp_normal)
+            for j in range(trials_per_run):
+                if (j+1) % ask_every == 0:
+                    actual_sniffs.append(cp_ask.pop(0))
+                else:
+                    actual_sniffs.append(cp_normal.pop(0))
+
+            if not has_3_values_in_a_row(actual_sniffs):
+                all_sniffs[i] = actual_sniffs
                 break
     return all_sniffs
 def get_serial_port(device_hint:str = 'Arduino Due'):
